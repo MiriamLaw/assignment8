@@ -57,5 +57,16 @@ public class Assignment8 {
         System.out.println("Done Fetching records " + start + " to " + (end));
         return newList;
     }
+    
+    public List<Integer> getNumbers(int start, int end) {
+    	List<Integer> newList = new ArrayList<>();
+    	IntStream.range(start, end)
+    			 .forEach(n -> {
+    				 if (n < numbers.size()) {
+    					 newList.add(numbers.get(n));
+    				 }
+    			 });
+    	return newList;
+    }
 
 }
