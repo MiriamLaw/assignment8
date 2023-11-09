@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class DataFetcher {
 
 	public static void main(String[] args) {
-		int numberOfChunks = 1000;
+int numberOfChunks = 1000;
 		
 		Assignment8 assignment8 = new Assignment8();
 		ExecutorService exService = Executors.newCachedThreadPool();
@@ -87,6 +87,4 @@ public class DataFetcher {
 		
 		
 	}
-	
-
 }
