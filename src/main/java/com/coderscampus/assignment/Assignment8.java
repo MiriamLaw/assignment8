@@ -68,5 +68,14 @@ public class Assignment8 {
     			 });
     	return newList;
     }
+    
+    /**
+     * Returns an empty list of integers.
+     *
+     * @return An empty list of integers.
+     */
+   public List<Integer> getEmptyNumbers() {
+    	return new ArrayList<>();
+    }
 
 }

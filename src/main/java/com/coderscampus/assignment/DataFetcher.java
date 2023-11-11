@@ -1,7 +1,6 @@
 package com.coderscampus.assignment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -20,12 +19,10 @@ public class DataFetcher {
 		Assignment8 assignment8 = new Assignment8();
 		Map<Integer, AtomicInteger> counts = new ConcurrentHashMap<>();
 		ExecutorService exService = Executors.newCachedThreadPool();
-		
 		List<CompletableFuture<List<Integer>>> futures = new ArrayList<>();
 		
 		for (int i=0; i<numberOfChunks; i++) {
 			final int chunk = i;
-			
 			CompletableFuture<List<Integer>> future = CompletableFuture.supplyAsync(() -> 
 												fetchDataChunk(chunk, assignment8, counts, exService), exService).exceptionally(ex -> {
 													System.err.println("Exception occurred: " + ex.getMessage());
@@ -37,13 +34,10 @@ public class DataFetcher {
 		CompletableFuture<Void> all = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 		
 		all.thenRun(() -> {
-//			System.out.println("Counts before printing: " + counts);
 			printTotalCounts(counts);
-			
 		});
 		
 		all.join();
-		System.out.println("Processing completed!");
 
 		exService.shutdown();
 
@@ -57,13 +51,13 @@ public class DataFetcher {
 			for (int i = 1; i <= 14; i++) {
 
 				int count = counts.getOrDefault(i, new AtomicInteger(0)).get();
-				result.append(i).append("=").append(count).append(", ");
-//				System.out.println(i + "=" + count);
+				result.append(i).append("=").append(count);
+				
+				if (i < 14) {
+					result.append(", ");
+				}
 			}
 			
-			if (result.length() > 0) {
-				result.setLength(result.length());
-			}
 			System.out.println(result);
 		}
 	}
@@ -71,15 +65,12 @@ public class DataFetcher {
 		int chunkSize = 1000;
 		int start = chunk * chunkSize;
 		int end = start + chunkSize;
-		
-//		System.out.println("Processing chunk: " + chunk + " from " + start + " to " + end);
-		
+				
 		List<Integer> dataChunk = IntStream.range(start, end)
 				.boxed()
 				.map(n -> assignment8.getNumbers(n, n+1))
 				.flatMap(List::stream)
-//				.parallel()
-				.limit(10)
+				.limit(15)
 				.map(i -> {
 					
 					try {
@@ -91,7 +82,7 @@ public class DataFetcher {
 					return i;
 				})
 				.collect(Collectors.toList());
-		
+
 		return dataChunk;
 		
 		
