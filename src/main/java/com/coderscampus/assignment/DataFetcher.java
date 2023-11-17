@@ -8,10 +8,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class DataFetcher {
+	private static final Logger logger = Logger.getLogger(DataFetcher.class.getName());
 
 	public static void main(String[] args) {
 		int numberOfChunks = 1000;
@@ -58,7 +60,7 @@ public class DataFetcher {
 				}
 			}
 			
-			System.out.println(result);
+			logger.info(result.toString());
 		}
 	}
 	private static List<Integer> fetchDataChunk(int chunk, Assignment8 assignment8, Map<Integer, AtomicInteger> counts, ExecutorService exService) {
@@ -70,18 +72,21 @@ public class DataFetcher {
 				.boxed()
 				.map(n -> assignment8.getNumbers(n, n+1))
 				.flatMap(List::stream)
-				.limit(15)
+//				.limit(15)
 				.map(i -> {
-					
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 					}
-					counts.computeIfAbsent(i, k -> new AtomicInteger()).incrementAndGet();
+					synchronized (counts) {
+						counts.computeIfAbsent(i, k -> new AtomicInteger()).incrementAndGet();
+				}
 					return i;
 				})
 				.collect(Collectors.toList());
+		
+//		logger.info("Processed chunk " + chunk + " with counts: " + dataChunk);
 
 		return dataChunk;
 		
