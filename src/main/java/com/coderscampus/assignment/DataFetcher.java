@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class DataFetcher {
-	private static final Logger logger = Logger.getLogger(DataFetcher.class.getName());
 
 	public static void main(String[] args) {
 		int numberOfChunks = 1000;
@@ -60,7 +59,7 @@ public class DataFetcher {
 				}
 			}
 			
-			logger.info(result.toString());
+			System.out.println(result);
 		}
 	}
 	private static List<Integer> fetchDataChunk(int chunk, Assignment8 assignment8, Map<Integer, AtomicInteger> counts, ExecutorService exService) {
@@ -72,7 +71,6 @@ public class DataFetcher {
 				.boxed()
 				.map(n -> assignment8.getNumbers(n, n+1))
 				.flatMap(List::stream)
-//				.limit(15)
 				.map(i -> {
 					try {
 						Thread.sleep(500);
@@ -86,8 +84,6 @@ public class DataFetcher {
 				})
 				.collect(Collectors.toList());
 		
-//		logger.info("Processed chunk " + chunk + " with counts: " + dataChunk);
-
 		return dataChunk;
 		
 		
