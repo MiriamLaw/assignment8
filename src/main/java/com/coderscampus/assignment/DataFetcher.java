@@ -73,7 +73,7 @@ public class DataFetcher {
 				.flatMap(List::stream)
 				.map(i -> {
 					try {
-						Thread.sleep(500);
+						Thread.sleep(5);
 					} catch (InterruptedException e) {
 						Thread.currentThread().interrupt();
 					}
