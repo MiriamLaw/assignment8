@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -49,7 +48,7 @@ public class DataFetcher {
 			
 			StringBuilder result = new StringBuilder();
 
-			for (int i = 1; i <= 14; i++) {
+			for (int i = 0; i <= 14; i++) {
 
 				int count = counts.getOrDefault(i, new AtomicInteger(0)).get();
 				result.append(i).append("=").append(count);
