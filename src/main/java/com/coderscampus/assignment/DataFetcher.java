@@ -19,27 +19,25 @@ public class DataFetcher {
 		Assignment8 assignment8 = new Assignment8();
 		Map<Integer, AtomicInteger> counts = new ConcurrentHashMap<>();
 		ExecutorService exService = Executors.newCachedThreadPool();
-		List<CompletableFuture<List<Integer>>> futures = new ArrayList<>();
+		List<CompletableFuture<Integer>> futures = new ArrayList<>();
 		
-		for (int i=0; i<numberOfChunks; i++) {
-			final int chunk = i;
-			CompletableFuture<List<Integer>> future = CompletableFuture.supplyAsync(() -> 
-												fetchDataChunk(chunk, assignment8, counts, exService), exService).exceptionally(ex -> {
-													System.err.println("Exception occurred: " + ex.getMessage());
-													return new ArrayList<>();
-												});
-			futures.add(future);
-		}
-
-		CompletableFuture<Void> all = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-		
-		all.thenRun(() -> {
+	for (int x=0; x < numberOfChunks; x++) {
+				CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+					List<Integer> numbersList = assignment8.getNumbers();
+					numbersList.stream()
+							   .forEach(number -> {
+								   counts.computeIfAbsent(number, k -> new AtomicInteger(0)).incrementAndGet();
+							   });
+					return numbersList.size();
+				},
+				exService);
+				futures.add(future);
+			}
+			CompletableFuture<Void> all = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+			all.join();
 			printTotalCounts(counts);
-		});
-		
-		all.join();
-
-		exService.shutdown();
+			
+			exService.shutdown();
 
 	}
 
